@@ -1,0 +1,36 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Dispositivo {
+  id            String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  identificador String          @unique
+  modelo        String?
+  creadoEn      DateTime        @default(now()) @map("creado_en") @db.Timestamptz()
+  eventos       EventoImpacto[]
+
+  @@map("p1_dispositivo")
+}
+
+model EventoImpacto {
+  id             String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  dispositivoId  String      @map("dispositivo_id") @db.Uuid
+  dispositivo    Dispositivo @relation(fields: [dispositivoId], references: [id])
+  magnitud       Decimal     @db.Decimal(6, 2)
+  severidad      String
+  latitud        Float?      @db.DoublePrecision
+  longitud       Float?      @db.DoublePrecision
+  precisionM     Float?      @map("precision_m") @db.Real
+  ocurridoEn     DateTime    @map("ocurrido_en") @db.Timestamptz()
+  recibidoEn     DateTime    @default(now()) @map("recibido_en") @db.Timestamptz()
+  claveCliente   String      @map("clave_cliente")
+
+  @@unique([dispositivoId, claveCliente])
+  @@index([ocurridoEn(sort: Desc)], name: "idx_evento_fecha")
+  @@map("p1_evento_impacto")
+}
