@@ -9,8 +9,8 @@ class InicioPagina extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // Escucha el provider, lo que inicia la suscripción del acelerómetro
     // y al salir de la pantalla se hace dispose automáticamente.
-    final vigia = ref.watch(vigiaImpactosProvider);
-    final ultimoEvento = vigia.ultimoEvento;
+    ref.watch(vigiaImpactosProvider);
+    final ultimoEvento = ref.watch(ultimoEventoProvider);
 
     return Scaffold(
       appBar: AppBar(

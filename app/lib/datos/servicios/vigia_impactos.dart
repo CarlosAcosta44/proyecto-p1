@@ -10,18 +10,17 @@ import '../../dominio/entidades/evento_impacto.dart';
 import '../local/cola_local.dart';
 import '../red/api_eventos.dart';
 
-class VigiaImpactos extends ChangeNotifier {
+class VigiaImpactos {
   final ColaLocal cola; // sqflite
   final ApiEventos api;
   final double umbral;
   final Duration reposo;
-  
-  EventoImpacto? ultimoEvento;
+  final void Function(EventoImpacto) onNuevoImpacto;
   
   DateTime _ultimo = DateTime.fromMillisecondsSinceEpoch(0);
   StreamSubscription? _sub;
 
-  VigiaImpactos(this.cola, this.api, {this.umbral = 15.0, this.reposo = const Duration(milliseconds: 900)});
+  VigiaImpactos(this.cola, this.api, this.onNuevoImpacto, {this.umbral = 15.0, this.reposo = const Duration(milliseconds: 900)});
 
   void iniciar() {
     _sub = userAccelerometerEventStream(samplingPeriod: SensorInterval.gameInterval)
@@ -76,18 +75,11 @@ class VigiaImpactos extends ChangeNotifier {
 
     await cola.encolar(evento); // primero local: nunca se pierde
     
-    ultimoEvento = evento;
-    notifyListeners();
+    onNuevoImpacto(evento);
     
     // Fire and forget, pero sin bloquear el thread de forma peligrosa, usamos .then() o evitamos await de esto si estamos en la GUI
     api.sincronizarPendientes().catchError((_) {});
   }
 
-  @override
-  void dispose() {
-    _sub?.cancel();
-    super.dispose();
-  }
-  
   Future<void> detener() async => _sub?.cancel();
 }
