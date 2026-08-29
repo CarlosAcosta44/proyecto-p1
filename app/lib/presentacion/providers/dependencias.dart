@@ -12,16 +12,12 @@ final apiEventosProvider = Provider<ApiEventos>((ref) {
   return api;
 });
 
-final vigiaImpactosProvider = Provider.autoDispose<VigiaImpactos>((ref) {
+final vigiaImpactosProvider = ChangeNotifierProvider.autoDispose<VigiaImpactos>((ref) {
   final cola = ref.watch(colaLocalProvider);
   final api = ref.watch(apiEventosProvider);
   
   final vigia = VigiaImpactos(cola, api);
   vigia.iniciar();
-  
-  ref.onDispose(() {
-    vigia.detener();
-  });
   
   return vigia;
 });

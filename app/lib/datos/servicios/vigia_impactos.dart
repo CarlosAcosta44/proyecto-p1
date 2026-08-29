@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'package:geolocator/geolocator.dart';
@@ -9,11 +10,13 @@ import '../../dominio/entidades/evento_impacto.dart';
 import '../local/cola_local.dart';
 import '../red/api_eventos.dart';
 
-class VigiaImpactos {
+class VigiaImpactos extends ChangeNotifier {
   final ColaLocal cola; // sqflite
   final ApiEventos api;
   final double umbral;
   final Duration reposo;
+  
+  EventoImpacto? ultimoEvento;
   
   DateTime _ultimo = DateTime.fromMillisecondsSinceEpoch(0);
   StreamSubscription? _sub;
@@ -73,9 +76,18 @@ class VigiaImpactos {
 
     await cola.encolar(evento); // primero local: nunca se pierde
     
+    ultimoEvento = evento;
+    notifyListeners();
+    
     // Fire and forget, pero sin bloquear el thread de forma peligrosa, usamos .then() o evitamos await de esto si estamos en la GUI
     api.sincronizarPendientes().catchError((_) {});
   }
 
+  @override
+  void dispose() {
+    _sub?.cancel();
+    super.dispose();
+  }
+  
   Future<void> detener() async => _sub?.cancel();
 }

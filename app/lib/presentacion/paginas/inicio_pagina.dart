@@ -9,22 +9,31 @@ class InicioPagina extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // Escucha el provider, lo que inicia la suscripción del acelerómetro
     // y al salir de la pantalla se hace dispose automáticamente.
-    ref.watch(vigiaImpactosProvider);
+    final vigia = ref.watch(vigiaImpactosProvider);
+    final ultimoEvento = vigia.ultimoEvento;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Bitácora Sísmica CEET'),
       ),
-      body: const Center(
+      body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.sensors, size: 80, color: Colors.blue),
-            SizedBox(height: 20),
-            Text('Vigilando impactos...', style: TextStyle(fontSize: 20)),
-            SizedBox(height: 10),
-            Text('Mueve el dispositivo bruscamente\npara registrar un impacto.', 
+            const Icon(Icons.sensors, size: 80, color: Colors.blue),
+            const SizedBox(height: 20),
+            const Text('Vigilando impactos...', style: TextStyle(fontSize: 20)),
+            const SizedBox(height: 10),
+            const Text('Mueve el dispositivo bruscamente\npara registrar un impacto.', 
                 textAlign: TextAlign.center, style: TextStyle(color: Colors.grey)),
+            const SizedBox(height: 40),
+            if (ultimoEvento != null) ...[
+              const Text('Último impacto detectado:', style: TextStyle(fontWeight: FontWeight.bold)),
+              Text('Magnitud: ${ultimoEvento.magnitud.toStringAsFixed(2)}'),
+              Text('Severidad: ${ultimoEvento.severidad}', 
+                  style: TextStyle(color: ultimoEvento.severidad == 'fuerte' ? Colors.red : Colors.orange)),
+              Text('Hora: ${ultimoEvento.ocurridoEn.toLocal().toString().split('.')[0]}'),
+            ]
           ],
         ),
       ),
