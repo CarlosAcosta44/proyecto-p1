@@ -4,14 +4,13 @@ import '../local/cola_local.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ApiEventos {
   final Dio _dio;
   final ColaLocal _cola;
 
-  // REEMPLAZAR CON LA IP LOCAL DE LA RED PARA PROBAR EN DISPOSITIVO FÍSICO
-  // El emulador usaría 10.0.2.2, pero el celular físico necesita la IP de la laptop en la red WiFi.
-  final String _baseUrl = 'http://192.168.1.100:3000/api'; 
+  final String _baseUrl = dotenv.env['API_BASE_URL'] ?? 'http://192.168.11.15:3000/api';
 
   ApiEventos(this._cola) : _dio = Dio() {
     _dio.options.baseUrl = _baseUrl;
