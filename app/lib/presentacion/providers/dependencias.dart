@@ -14,14 +14,23 @@ final apiEventosProvider = Provider<ApiEventos>((ref) {
   return api;
 });
 
-final ultimoEventoProvider = StateProvider<EventoImpacto?>((ref) => null);
+class UltimoEventoNotifier extends Notifier<EventoImpacto?> {
+  @override
+  EventoImpacto? build() => null;
+
+  void updateEvent(EventoImpacto evento) {
+    state = evento;
+  }
+}
+
+final ultimoEventoProvider = NotifierProvider<UltimoEventoNotifier, EventoImpacto?>(UltimoEventoNotifier.new);
 
 final vigiaImpactosProvider = Provider.autoDispose<VigiaImpactos>((ref) {
   final cola = ref.watch(colaLocalProvider);
   final api = ref.watch(apiEventosProvider);
   
   final vigia = VigiaImpactos(cola, api, (evento) {
-    ref.read(ultimoEventoProvider.notifier).state = evento;
+    ref.read(ultimoEventoProvider.notifier).updateEvent(evento);
   });
   vigia.iniciar();
   
