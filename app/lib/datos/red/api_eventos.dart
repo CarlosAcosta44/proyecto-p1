@@ -10,7 +10,7 @@ class ApiEventos {
   final Dio _dio;
   final ColaLocal _cola;
 
-  final String _baseUrl = dotenv.env['API_BASE_URL'] ?? 'http://192.168.11.15:3000/api';
+  final String _baseUrl = dotenv.env['API_BASE_URL'] ?? 'https://proyecto-p1-hbd9.onrender.com/api';
 
   ApiEventos(this._cola) : _dio = Dio() {
     _dio.options.baseUrl = _baseUrl;

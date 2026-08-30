@@ -6,7 +6,7 @@ Proyecto móvil full-stack con Flutter, Node.js y Sensores del dispositivo.
 
 Para la evaluación y sustentación del proyecto, las evidencias solicitadas se encuentran en los siguientes enlaces:
 
-1. **[Descargar APK (Android)](evidencias/BitacoraSismicaCEET-debug-arm64.apk)** 📱
+1. **[Descargar APK (Android)](evidencias/BitacoraSismicaCEET.apk)** 📱
    *Haz clic en el enlace para descargar el APK de la aplicación e instalarla en tu dispositivo físico.*
 2. **[Documento de Decisiones Técnicas (Umbrales)](docs/decisiones.md)** 📄
    *Justificación de los tiempos de reposo y la magnitud mínima de detección.*
@@ -31,7 +31,8 @@ node index.js
 ```
 
 ### 2. Frontend (App Móvil)
-Asegúrate de cambiar la IP en el archivo `app/.env` a la IP de tu computadora en la red Wi-Fi local antes de correr la aplicación en un dispositivo físico.
+La aplicación está configurada para conectarse al backend de producción desplegado en Render (`https://proyecto-p1-hbd9.onrender.com`).
+Si deseas correrlo con el backend local, asegúrate de cambiar la URL en el archivo `app/.env` a la IP de tu computadora en la red Wi-Fi local.
 
 ```bash
 cd app
